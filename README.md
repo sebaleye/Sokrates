@@ -200,32 +200,6 @@ LLM_PROVIDER = "local"
 
 ---
 
-## Example Output
-
-```json
-{
-  "cognitive_style": "Systematic Explorer",
-  "tagline": "First-principles thinker building from axioms",
-  "learning_velocity": {
-    "timeToCompetency": "6-8 weeks for technical skills",
-    "accelerationPattern": "slow-start-then-rapid",
-    "transferLearning": "high"
-  },
-  "growth_trajectory": {
-    "currentPhase": "Transitioning from implementation to architecture",
-    "naturalDirection": "Systems design and distributed thinking",
-    "highLeverageGap": "Moving from solo execution to collaborative technical leadership"
-  },
-  "hiring_insight": {
-    "bestFitRole": "Technical lead on greenfield projects",
-    "potentialRisks": "May over-engineer early-stage MVPs",
-    "investmentThesis": "Fast learner with proven transfer capability"
-  }
-}
-```
-
----
-
 ## License
 
 MIT License
