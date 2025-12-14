@@ -10,6 +10,8 @@ SOKRATES combines Socratic maieutics with AI-powered pattern analysis to create 
 
 This is not a CV generator. This is a trajectory analyzer.
 
+Built with Google's latest **Interactions API**, enabling stateful, multi-turn conversations that maintain context throughout the maieutic interview process.
+
 ---
 
 ## Features
