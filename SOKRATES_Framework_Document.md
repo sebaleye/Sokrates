@@ -172,8 +172,6 @@ SOKRATES è un tentativo di ripensare come ci si presenta professionalmente, par
 
 L'anti-portfolio non nasconde i limiti, li contestualizza. Non descrive solo il passato, prova a indicare una direzione. Non vende certezze, offre stime basate su dati.
 
-È un approccio, non una soluzione definitiva.
-
 ---
 
 *SOKRATES Framework - AI Works Challenge 2025*
