@@ -36,29 +36,29 @@ class MultiSourceAnalyzer:
         Returns:
             dict: Comprehensive analysis of learning patterns
         """
-        # Extract timeline events
+        # extract timeline events
         self._extract_timeline(text)
 
-        # Extract skills and technologies
+        # extract skills and technologies
         self._extract_skills(text)
 
-        # Extract projects and complexity indicators
+        # extract projects and complexity indicators
         self._extract_projects(text)
 
-        # Extract education and certifications
+        # extract education and certifications
         self._extract_education(text)
 
-        # Detect role transitions and career pivots
+        # detect role transitions and career pivots
         self._detect_transitions(text)
 
-        # Identify learning signals
+        # identify learning signals
         self._identify_learning_signals(text)
 
         return self._compile_analysis()
 
     def _extract_timeline(self, text):
         """Extract dated events and create timeline"""
-        # Date patterns: 2020-2023, Jan 2020, 2020-Present, etc.
+        # date patterns: 2020-2023, Jan 2020, 2020-Present, etc.
         date_patterns = [
             r'(\d{4})\s*[-–]\s*(\d{4}|Present|present|Current|current)',
             r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{4})',
@@ -70,20 +70,20 @@ class MultiSourceAnalyzer:
             for pattern in date_patterns:
                 matches = re.finditer(pattern, line, re.IGNORECASE)
                 for match in matches:
-                    # Get context (surrounding lines)
+                    # get context (surrounding lines)
                     context_start = max(0, i - 1)
                     context_end = min(len(lines), i + 3)
                     context = ' '.join(lines[context_start:context_end])
 
                     self.data['timeline_events'].append({
                         'date_match': match.group(0),
-                        'context': context.strip()[:300],  # Limit context length
+                        'context': context.strip()[:300],  # limit context length
                         'line': line.strip()
                     })
 
     def _extract_skills(self, text):
         """Extract technical and soft skills with context"""
-        # Common skill categories and keywords
+        # common skill categories and keywords
         skill_categories = {
             'programming_languages': [
                 'Python', 'JavaScript', 'TypeScript', 'Java', 'C\\+\\+', 'C#', 'C', 'Ruby',
@@ -135,24 +135,24 @@ class MultiSourceAnalyzer:
             ]
         }
 
-        # Convert text to lowercase for case-insensitive matching, but keep original for context
+        # convert text to lowercase for case-insensitive matching, but keep original for context
         text_lower = text.lower()
 
         for category, skills in skill_categories.items():
             for skill in skills:
-                # Create flexible pattern (case insensitive, word boundary)
+                # create flexible pattern (case insensitive, word boundary)
                 pattern = r'\b' + skill.replace('.', r'\.') + r'\b'
                 matches = re.finditer(pattern, text, re.IGNORECASE)
 
                 found_match = False
                 for match in matches:
                     found_match = True
-                    # Get surrounding context
+                    # get surrounding context
                     start = max(0, match.start() - 100)
                     end = min(len(text), match.end() + 100)
                     context = text[start:end]
 
-                    # Store with normalized skill name
+                    # store with normalized skill name
                     skill_key = skill.lower().replace(r'\.', '.')
                     self.data['skill_mentions'][skill_key].append({
                         'category': category,
@@ -162,7 +162,7 @@ class MultiSourceAnalyzer:
 
     def _extract_projects(self, text):
         """Extract project descriptions and complexity indicators"""
-        # Keywords that often indicate project descriptions
+        # keywords that often indicate project descriptions
         project_indicators = [
             r'(?:built|developed|created|designed|implemented|launched|shipped|delivered|engineered|architected)\s+(?:a|an|the)?\s*[\w\s]{10,150}',
             r'project:?\s*.{20,200}',
@@ -171,20 +171,20 @@ class MultiSourceAnalyzer:
             r'(?:responsible for|in charge of)\s+.{20,150}',
         ]
 
-        seen_descriptions = set()  # Avoid duplicates
+        seen_descriptions = set()  # avoid duplicates
 
         for pattern in project_indicators:
             matches = re.finditer(pattern, text, re.IGNORECASE)
             for match in matches:
                 description = match.group(0).strip()[:200]
 
-                # Skip if too short or already seen
+                # skip if too short or already seen
                 if len(description) < 20 or description in seen_descriptions:
                     continue
 
                 seen_descriptions.add(description)
 
-                # Extract complexity signals
+                # extract complexity signals
                 complexity_signals = self._assess_project_complexity(description)
 
                 self.data['project_complexity'].append({
@@ -213,13 +213,13 @@ class MultiSourceAnalyzer:
                     found_indicators.append(f"{category}:{keyword}")
 
         return {
-            'score': min(score, 10),  # Normalize to 0-10
+            'score': min(score, 10),  # normalize to 0-10
             'indicators': found_indicators
         }
 
     def _extract_education(self, text):
         """Extract education and learning timeline"""
-        # Education keywords
+        # education keywords
         education_patterns = [
             r'(Bachelor|Master|PhD|Doctorate|BSc|MSc|BA|MA)(?:\s+(?:of|in))?\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',
             r'(University|College|Institute)\s+of\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',
@@ -238,7 +238,7 @@ class MultiSourceAnalyzer:
 
     def _detect_transitions(self, text):
         """Detect career transitions and pivots"""
-        # Role progression keywords
+        # role progression keywords
         role_levels = {
             'junior': ['junior', 'associate', 'intern', 'trainee', 'assistant'],
             'mid': ['developer', 'engineer', 'designer', 'analyst', 'specialist'],
@@ -246,13 +246,13 @@ class MultiSourceAnalyzer:
             'leadership': ['manager', 'director', 'head of', 'vp', 'chief', 'founder', 'co-founder']
         }
 
-        # Look for role mentions with dates
+        # look for role mentions with dates
         lines = text.split('\n')
         for line in lines:
             for level, keywords in role_levels.items():
                 for keyword in keywords:
                     if re.search(r'\b' + keyword + r'\b', line, re.IGNORECASE):
-                        # Try to extract date from same line or nearby
+                        # try to extract date from same line or nearby
                         date_match = re.search(r'\d{4}', line)
                         self.data['role_transitions'].append({
                             'level': level,
@@ -290,7 +290,7 @@ class MultiSourceAnalyzer:
             for pattern in patterns:
                 matches = re.finditer(pattern, text, re.IGNORECASE)
                 for match in matches:
-                    # Get context
+                    # get context
                     start = max(0, match.start() - 80)
                     end = min(len(text), match.end() + 80)
                     context = text[start:end]
@@ -303,7 +303,7 @@ class MultiSourceAnalyzer:
 
     def _compile_analysis(self):
         """Compile all extracted data into structured analysis"""
-        # Calculate timeline span
+        # calculate timeline span
         years = set()
         for event in self.data['timeline_events']:
             year_matches = re.findall(r'\d{4}', event['date_match'])
@@ -315,23 +315,23 @@ class MultiSourceAnalyzer:
             'total_years': int(max(years)) - int(min(years)) if len(years) > 1 else 0
         }
 
-        # Aggregate skills by category
+        # aggregate skills by category
         skills_by_category = defaultdict(list)
         for skill, mentions in self.data['skill_mentions'].items():
-            if mentions:  # Only include skills that were actually found
+            if mentions:  # only include skills that were actually found
                 category = mentions[0]['category']
                 skills_by_category[category].append({
                     'skill': skill,
                     'mention_count': len(mentions)
                 })
 
-        # Calculate learning velocity indicators
+        # calculate learning velocity indicators
         learning_velocity = self._calculate_learning_velocity_indicators()
 
         return {
             'timeline': {
                 'span': timeline_span,
-                'events': self.data['timeline_events'][:20],  # Limit to recent events
+                'events': self.data['timeline_events'][:20],  # limit to recent events
             },
             'skills': {
                 'by_category': dict(skills_by_category),
@@ -371,7 +371,7 @@ class MultiSourceAnalyzer:
         """Calculate learning velocity based on extracted patterns"""
         indicators = {}
 
-        # Skill diversity (breadth vs depth)
+        # skill diversity (breadth vs depth)
         total_skills = len(self.data['skill_mentions'])
         skill_categories = len(set(
             mention['category']
@@ -385,7 +385,7 @@ class MultiSourceAnalyzer:
             'breadth_score': min(skill_categories * 10, 100)  # 0-100 scale
         }
 
-        # Complexity trajectory
+        # complexity trajectory
         if self.data['project_complexity']:
             avg_complexity = sum(p['complexity_score'] for p in self.data['project_complexity']) / len(self.data['project_complexity'])
             indicators['complexity_trajectory'] = {
@@ -393,7 +393,7 @@ class MultiSourceAnalyzer:
                 'trend': 'increasing' if len(self.data['project_complexity']) > 3 else 'insufficient_data'
             }
 
-        # Learning signal intensity
+        # learning signal intensity
         signal_counts = defaultdict(int)
         for signal in self.data['learning_signals']:
             signal_counts[signal['type']] += 1
@@ -405,7 +405,7 @@ class MultiSourceAnalyzer:
             'ownership_signals': signal_counts.get('ownership', 0)
         }
 
-        # Career velocity (how fast they progress)
+        # career velocity (how fast they progress)
         role_transitions = self.data['role_transitions']
         if role_transitions:
             levels = ['junior', 'mid', 'senior', 'leadership']
@@ -445,7 +445,7 @@ class MultiSourceAnalyzer:
         if len(role_levels) < 2:
             return 'insufficient_data'
 
-        # Check if generally increasing
+        # check if generally increasing
         level_indices = [levels.index(level) for level in role_levels if level in levels]
         if not level_indices:
             return 'unclear'

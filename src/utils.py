@@ -29,18 +29,18 @@ def extract_text_from_url(url):
         
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Remove script and style elements
+        # remove script and style elements
         for script in soup(["script", "style", "nav", "footer", "header"]):
             script.decompose()
             
-        # Get text
+        # get text
         text = soup.get_text(separator='\n')
         
-        # Break into lines and remove leading and trailing space on each
+        # break into lines and remove leading and trailing space on each
         lines = (line.strip() for line in text.splitlines())
-        # Break multi-headlines into a line each
+        # break multi-headlines into a line each
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        # Drop blank lines
+        # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
         
         return f"--- CONTENT FROM URL: {url} ---\n{text}\n-----------------------------------\n"

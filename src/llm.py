@@ -16,20 +16,20 @@ def clean_response(text):
     # 1. Remove <think>...</think> blocks (including newlines)
     cleaned = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
     
-    # 2. Check for explicit output delimiter '>>>'
+    # 2. check for explicit output delimiter '>>>'
     if ">>>" in cleaned:
         parts = cleaned.split(">>>")
-        # Return the last part (the actual output)
+        # return the last part (the actual output)
         cleaned = parts[-1]
         
-    # 3. Remove leading/trailing quotes and common prefixes
+    # 3. remove leading/trailing quotes and common prefixes
     cleaned = cleaned.strip().strip('"').strip("'")
     
-    # Remove "Question:" prefix if present (case insensitive)
+    # remove "Question:" prefix if present (case insensitive)
     if cleaned.lower().startswith("question:"):
         cleaned = cleaned[9:].strip()
         
-    # Remove markdown italics/bold wrappers if they wrap the whole string
+    # remove markdown italics/bold wrappers if they wrap the whole string
     if cleaned.startswith("*") and cleaned.endswith("*"):
         cleaned = cleaned.strip("*")
     if cleaned.startswith("_") and cleaned.endswith("_"):
@@ -44,14 +44,14 @@ def clean_json_string(json_str):
     if not json_str:
         return ""
         
-    # Remove markdown code blocks
+    # remove markdown code blocks
     json_str = re.sub(r'```json', '', json_str)
     json_str = re.sub(r'```', '', json_str)
     
-    # Attempt to fix common missing bracket errors
-    # Case: "core_patterns": [ ... }, "anti_patterns" (missing closing ])
-    # We look for }, "key" where the previous structure implies a list
-    # This is a heuristic fix for the specific error observed
+    # attempt to fix common missing bracket errors
+    # case: "core_patterns": [ ... }, "anti_patterns" (missing closing ])
+    # we look for }, "key" where the previous structure implies a list
+    # this is a heuristic fix for the specific error observed
     if '}, "anti_patterns"' in json_str and '}], "anti_patterns"' not in json_str:
         json_str = json_str.replace('}, "anti_patterns"', '}], "anti_patterns"')
         
@@ -64,25 +64,25 @@ def get_interaction_response(
     previous_interaction_id=None
 ):
     """
-    Wrapper for the new Gemini Interactions API (Beta) OR Local LLM (LM Studio).
+    Wrapper for LLM API interactions.
     
     Args:
         user_input (str): The text input from the user.
         system_instruction (str, optional): System instructions (only used for new interactions).
-        model_name (str): Model to use (e.g., 'gemini-2.0-flash').
+        model_name (str): Model to use.
         previous_interaction_id (str, optional): ID to continue a conversation.
         
     Returns:
         tuple: (response_text, interaction_id)
     """
     
-    # Check for provider configuration (default to google if not set)
+    # check for provider configuration (default to google if not set)
     provider = st.secrets.get("LLM_PROVIDER", "google")
     
     if provider == "local":
         return _get_local_response(user_input, system_instruction, previous_interaction_id)
     
-    # --- GOOGLE GEMINI IMPLEMENTATION ---
+    # --- cloud provider implementation ---
     if "GEMINI_API_KEY" not in st.secrets:
         st.error("GEMINI_API_KEY not found in secrets.toml")
         return "Error: API Key missing.", None
@@ -103,14 +103,14 @@ def get_interaction_response(
         # as the initial context or prepended to the first input if the specific 
         # model/endpoint doesn't support a separate 'system_instruction' param 
         # in the create() call directly. 
-        # However, the Client usually handles config. Let's check if we can pass it in config.
-        # The docs show simple input. We will prepend it to be safe and explicit.
+        # however, the Client usually handles config. Let's check if we can pass it in config.
+        # the docs show simple input. We will prepend it to be safe and explicit.
         config["input"] = f"SYSTEM INSTRUCTION:\n{system_instruction}\n\nUSER INPUT:\n{user_input}"
 
     try:
         interaction = client.interactions.create(**config)
         
-        # get the text from the last output
+        # get text from the last output
         response_text = interaction.outputs[-1].text
         return clean_response(response_text), interaction.id
         
@@ -121,34 +121,34 @@ def _get_local_response(user_input, system_instruction, previous_interaction_id)
     """
     Handles interaction with a local LLM (e.g., LM Studio) mimicking the Interaction API state.
     """
-    # Initialize local storage if needed
+    # initialize local storage if needed
     if "local_interactions" not in st.session_state:
         st.session_state.local_interactions = {}
         
-    # Determine Interaction ID
+    # determine interaction ID
     interaction_id = previous_interaction_id
     if not interaction_id:
         interaction_id = str(uuid.uuid4())
         st.session_state.local_interactions[interaction_id] = []
-        # Add system instruction if new
+        # add system instruction if new
         if system_instruction:
             st.session_state.local_interactions[interaction_id].append({
                 "role": "system", 
                 "content": system_instruction
             })
             
-    # Retrieve history
+    # retrieve history
     messages = list(st.session_state.local_interactions[interaction_id])
     
-    # Add user input
+    # add user input
     messages.append({"role": "user", "content": user_input})
     
-    # Call Local LLM
+    # call local LLM
     try:
         client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
         
         completion = client.chat.completions.create(
-            model="local-model", # LM Studio usually ignores this or uses the loaded model
+            model="local-model", # uses loaded model
             messages=messages,
             temperature=0.7
         )
@@ -156,10 +156,10 @@ def _get_local_response(user_input, system_instruction, previous_interaction_id)
         response_text = completion.choices[0].message.content
         cleaned_text = clean_response(response_text)
         
-        # Append assistant response to history
+        # append assistant response to history
         messages.append({"role": "assistant", "content": cleaned_text})
         
-        # Update state
+        # update state
         st.session_state.local_interactions[interaction_id] = messages
         
         return cleaned_text, interaction_id

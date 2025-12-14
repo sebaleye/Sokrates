@@ -31,12 +31,12 @@ class GitHubAnalyzer:
             dict: Comprehensive analysis of learning patterns
         """
         try:
-            # Fetch user repos
+            # fetch user repos
             repos = self._fetch_user_repos(username)
             if not repos:
                 return None
 
-            # Extract commit data from repos
+            # extract commit data from repos
             commit_timeline = []
             language_usage = defaultdict(lambda: {
                 'first_use': None,
@@ -46,13 +46,13 @@ class GitHubAnalyzer:
             })
             project_complexity = []
 
-            for repo in repos[:20]:  # Limit to 20 most recent repos to avoid rate limiting
+            for repo in repos[:20]:  # limit to 20 most recent repos to avoid rate limiting
                 repo_name = repo['name']
 
-                # Get commits for this repo
+                # get commits for this repo
                 commits = self._fetch_repo_commits(username, repo_name)
 
-                # Track languages
+                # track languages
                 if repo.get('language'):
                     lang = repo['language']
                     language_usage[lang]['commit_count'] += len(commits)
@@ -66,7 +66,7 @@ class GitHubAnalyzer:
                     if not language_usage[lang]['last_use'] or repo_updated > language_usage[lang]['last_use']:
                         language_usage[lang]['last_use'] = repo_updated
 
-                # Analyze commits
+                # analyze commits
                 for commit in commits:
                     commit_date = commit['commit']['author']['date']
                     commit_timeline.append({
@@ -75,7 +75,7 @@ class GitHubAnalyzer:
                         'message': commit['commit']['message']
                     })
 
-                # Track project complexity
+                # track project complexity
                 project_complexity.append({
                     'repo_name': repo_name,
                     'created': repo['created_at'],
@@ -86,7 +86,7 @@ class GitHubAnalyzer:
                     'size': repo.get('size', 0)
                 })
 
-            # Calculate learning patterns
+            # calculate learning patterns
             learning_patterns = self._calculate_learning_patterns(
                 commit_timeline,
                 language_usage,
@@ -156,7 +156,7 @@ class GitHubAnalyzer:
         """Calculate learning velocity and patterns"""
         patterns = {}
 
-        # Calculate time to first commit for each language
+        # calculate time to first commit for each language
         time_to_first_commit = {}
         for lang, data in language_usage.items():
             if data['first_use'] and data['last_use']:
@@ -165,7 +165,7 @@ class GitHubAnalyzer:
 
         patterns['time_to_first_commit'] = time_to_first_commit
 
-        # Calculate consistency score (commit frequency variance)
+        # calculate consistency score (commit frequency variance)
         if commit_timeline:
             dates = [datetime.strptime(c['date'].split('T')[0], '%Y-%m-%d') for c in commit_timeline]
             if len(dates) > 1:
@@ -173,13 +173,13 @@ class GitHubAnalyzer:
                 gaps = [(dates_sorted[i+1] - dates_sorted[i]).days for i in range(len(dates_sorted)-1)]
                 avg_gap = sum(gaps) / len(gaps) if gaps else 0
                 variance = sum((g - avg_gap) ** 2 for g in gaps) / len(gaps) if gaps else 0
-                patterns['consistency_score'] = 100 - min(variance / 10, 100)  # Normalize to 0-100
+                patterns['consistency_score'] = 100 - min(variance / 10, 100)  # normalize to 0-100
             else:
                 patterns['consistency_score'] = 50
         else:
             patterns['consistency_score'] = 0
 
-        # Exploration vs Build ratio
+        # exploration vs build ratio
         total_repos = len(projects)
         total_commits = len(commit_timeline)
         patterns['exploration_vs_build'] = total_repos / max(total_commits / 10, 1)

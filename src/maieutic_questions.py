@@ -106,7 +106,7 @@ def get_phase_questions(phase, history, tensions):
         dict with question guidance for the director
     """
     if phase == 1:
-        # PHASE 1: ORIGINS - Why they do what they do
+        # phase 1: origins - why they do what they do
         return {
             "focus": "Origins and Motivation",
             "goal": "Understand WHY they do what they do, not just WHAT they do",
@@ -118,7 +118,7 @@ def get_phase_questions(phase, history, tensions):
         }
 
     elif phase == 2:
-        # PHASE 2: PROCESS - How they work
+        # phase 2: process - how they work
         return {
             "focus": "Process and Learning Methodology",
             "goal": "Reveal their cognitive operating system - how they think and learn",
@@ -130,7 +130,7 @@ def get_phase_questions(phase, history, tensions):
         }
 
     else:
-        # PHASE 3: POTENTIAL - Test limits with hypotheticals
+        # phase 3: potential - test limits with hypotheticals
         return {
             "focus": "Potential and Future Direction",
             "goal": "Test their limits with hypothetical scenarios, reveal growth edges",
@@ -156,7 +156,7 @@ def generate_adaptive_question(user_answer, phase, tensions):
     """
     answer_length = len(user_answer.split())
 
-    # Short/dismissive answer - PIVOT
+    # short/dismissive answer - pivot
     if answer_length < 20:
         return """
 User gave a short answer. This topic may not be productive.
@@ -164,7 +164,7 @@ PIVOT to a completely different angle from the tensions list.
 Ask something unexpected that requires concrete thinking.
         """
 
-    # Detailed but abstract answer - PROBE DEEPER
+    # detailed but abstract answer - probe deeper
     elif "I think" in user_answer or "I believe" in user_answer or "usually" in user_answer:
         return """
 User gave abstract/theoretical answer. Need concrete examples.
@@ -172,7 +172,7 @@ Ask for a SPECIFIC instance: "Can you walk me through the last time that happene
 Push from theory to observable behavior.
         """
 
-    # Detailed and concrete - CHALLENGE
+    # detailed and concrete - challenge
     else:
         return """
 User gave detailed, concrete answer. Good signal.
@@ -191,10 +191,10 @@ SOKRATES_QUESTION_EXAMPLES = {
         "If you had to explain your decision-making process to an AI, what would be the hardest part to articulate?"
     ],
     "bad": [
-        "What are your strengths?",  # Too generic
-        "Are you a fast learner?",  # Allows easy claims
-        "What would you improve about yourself?",  # Invites clichés
-        "Tell me about a time you faced a challenge.",  # Standard interview question
-        "Where do you see yourself in 5 years?"  # Future speculation, not thinking pattern
+        "What are your strengths?",  # too generic
+        "Are you a fast learner?",  # allows easy claims
+        "What would you improve about yourself?",  # invites cliches
+        "Tell me about a time you faced a challenge.",  # standard interview question
+        "Where do you see yourself in 5 years?"  # future speculation, not thinking pattern
     ]
 }
