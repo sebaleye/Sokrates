@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOKRATES - Example Portfolios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            min-height: 100vh;
+            padding: 4rem 2rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .intro {
+            background: #111;
+            border-left: 3px solid #3b82f6;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+        
+        .examples {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .example-card {
+            background: #111;
+            border: 1px solid #222;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .example-card:hover {
+            border-color: #3b82f6;
+            transform: translateX(8px);
+        }
+        
+        .profile-type {
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-role {
+            color: #888;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-tagline {
+            font-style: italic;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid #333;
+        }
+        
+        .view-link {
+            display: inline-block;
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .view-link:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #222;
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SOKRATES</h1>
+        <p class="subtitle">Example Anti-Portfolios</p>
+        
+        <div class="intro">
+            <p>These three portfolios demonstrate how SOKRATES adapts to different professional profiles. Each uses a distinct visual style and narrative structure based on the detected profile type.</p>
+        </div>
+        
+        <div class="examples">
+            <a href="developer_portfolio.html" class="example-card" style="text-decoration: none; color: inherit;">
+                <div class="profile-type">Builder Profile</div>
+                <div class="profile-name">Marco Ferretti</div>
+                <div class="profile-role">Software Developer</div>
+                <div class="profile-tagline">"Builds scalable solutions from first principles"</div>
+                <span class="view-link">View Portfolio →</span>
+            </a>
+            
+            <a href="designer_portfolio.html" class="example-card" style="text-decoration: none; color: inherit;">
+                <div class="profile-type">Creator Profile</div>
+                <div class="profile-name">Elena Marchetti</div>
+                <div class="profile-role">Product Designer</div>
+                <div class="profile-tagline">"Designs for humans, not interfaces"</div>
+                <span class="view-link">View Portfolio →</span>
+            </a>
+            
+            <a href="marketer_portfolio.html" class="example-card" style="text-decoration: none; color: inherit;">
+                <div class="profile-type">Strategist Profile</div>
+                <div class="profile-name">Giulia Benedetti</div>
+                <div class="profile-role">Marketing Strategist</div>
+                <div class="profile-tagline">"Finds the story the numbers are trying to tell"</div>
+                <span class="view-link">View Portfolio →</span>
+            </a>
+        </div>
+        
+        <footer>
+            SOKRATES Anti-Portfolio Generator | AI Works Challenge 2025
+        </footer>
+    </div>
+</body>
+</html>
