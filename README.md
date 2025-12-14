@@ -55,7 +55,7 @@ Built with Google's latest **Interactions API**, enabling stateful, multi-turn c
 ### Installation
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/sebaleye/Sokrates.git
 cd Sokrates
 
 python -m venv .venv
