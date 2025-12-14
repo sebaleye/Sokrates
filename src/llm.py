@@ -83,11 +83,18 @@ def get_interaction_response(
         return _get_local_response(user_input, system_instruction, previous_interaction_id)
     
     # --- cloud provider implementation ---
-    if "GEMINI_API_KEY" not in st.secrets:
-        st.error("GEMINI_API_KEY not found in secrets.toml")
-        return "Error: API Key missing.", None
+    # priority: user-provided key > secrets.toml
+    api_key = None
+    if "user_api_key" in st.session_state and st.session_state.user_api_key:
+        api_key = st.session_state.user_api_key
+    elif "GEMINI_API_KEY" in st.secrets:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    
+    if not api_key:
+        st.error("Please enter your Gemini API key in the sidebar")
+        return "Error: API Key missing. Please enter your API key in the sidebar.", None
 
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    client = genai.Client(api_key=api_key)
     
     config = {
         "model": model_name,

@@ -53,11 +53,28 @@ if "multi_source_data" not in st.session_state:
     st.session_state.multi_source_data = None
 if "multi_source_analysis" not in st.session_state:
     st.session_state.multi_source_analysis = None
+if "user_api_key" not in st.session_state:
+    st.session_state.user_api_key = None
 
 # app interface flow
 
 st.title("S O K R A T E S")
 st.markdown("### The Anti-Portfolio Generator")
+
+# sidebar for API key
+with st.sidebar:
+    st.markdown("### Configuration")
+    api_key_input = st.text_input(
+        "Google Gemini API Key",
+        type="password",
+        placeholder="AIza...",
+        help="Get your free API key at https://aistudio.google.com/apikey"
+    )
+    if api_key_input:
+        st.session_state.user_api_key = api_key_input
+        st.success("API key configured")
+    st.markdown("---")
+    st.markdown("[Get a free API key](https://aistudio.google.com/apikey)")
 
 # step 1: onboarding (the "mindset reset")
 if st.session_state.step == "onboarding":
