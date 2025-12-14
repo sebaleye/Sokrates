@@ -170,7 +170,7 @@ SOKRATES è un tentativo di ripensare come ci si presenta professionalmente, par
 - Il valore sta nella capacità di adattamento
 - I pattern di apprendimento dicono più delle liste di skill
 
-L'anti-portfolio non nasconde i limiti, li contestualizza. Non descrive solo il passato, prova a indicare una direzione. Non vende certezze, offre stime basate su dati.
+L'anti-portfolio non nasconde i limiti, li contestualizza. Non descrive solo il passato, prova a indicare una direzione.
 
 ---
 
